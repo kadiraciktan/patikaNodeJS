@@ -1,0 +1,1 @@
+#### Bu repo patika.dev eğitimi kapsamında node js örneklerini içermektedir.
