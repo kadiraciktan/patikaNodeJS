@@ -42,6 +42,12 @@ app.post('/add_post',async (req,res)=>{
     res.redirect('/');
 });
 
+app.get('/post/:id',async(req,res)=>{
+    var post = await Post.findById(req.params.id);
+    res.render('post',{post});
+});
+
+
 app.listen(port,()=>{
     console.log(`Sunucu ${port} Portunda Başladı...`);
 });
