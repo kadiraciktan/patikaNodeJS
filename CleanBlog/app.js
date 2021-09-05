@@ -3,6 +3,9 @@ const ejs = require('ejs');
 const app = express();
 const Post = require('./models/Post');
 const mongoose = require('mongoose');
+const methodOverride = require('method-override');
+const postController = require('./controllers/postController');
+const pageController = require('./controllers/pageController');
 const port=80;
 
 
@@ -20,32 +23,23 @@ app.set("view engine","ejs");
 app.use(express.static('public'));
 app.use(express.urlencoded({extended:true})); // bodyparser yerine kullanılıyor -> urldeki datayı okuyor
 app.use(express.json()); //urldeki datayı json a çeviriyor
+app.use(methodOverride('_method',{
+    methods:['POST','GET']
+}));
 
 
-app.get('/',async(req,res)=>{
-    var posts = await Post.find({});
-    res.render("index",{
-        posts
-    });
-});
+app.get('/',postController.getAllPosts);
+app.get('/post/:id',postController.getPost);
+app.post('/add_post',postController.createPost);
+app.delete('/post/:id',postController.deletePost);
+app.put('/post/:id',postController.editPost);
 
-app.get('/about',(req,res)=>{
-    res.render("about");
-});
 
-app.get('/add_post',(req,res)=>{
-    res.render("add_post");
-});
 
-app.post('/add_post',async (req,res)=>{
-    await Post.create(req.body);
-    res.redirect('/');
-});
+app.get('/about',pageController.getAboutPage);
+app.get('/add_post',pageController.getAddPost);
+app.get('/post/edit/:id',pageController.getEditPost);
 
-app.get('/post/:id',async(req,res)=>{
-    var post = await Post.findById(req.params.id);
-    res.render('post',{post});
-});
 
 
 app.listen(port,()=>{
